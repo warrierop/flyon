@@ -28,11 +28,19 @@
 
     body {
       font-family: 'Poppins', sans-serif;
-      background: var(--dark);
+      background: linear-gradient(-45deg, var(--dark), #111, var(--dark), #111);
+      background-size: 400% 400%;
+      animation: gradientBG 20s ease infinite;
       color: #fff;
       overflow-x: hidden;
       line-height: 1.5;
       scroll-behavior: smooth;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     /* --- floating background (more dynamic) --- */
@@ -52,7 +60,12 @@
       border-radius: 50%;
       opacity: 0.1;
       filter: blur(70px);
-      animation: floatAround 18s infinite alternate ease-in-out;
+      animation: floatAround 18s infinite alternate ease-in-out, fadeInOut 12s infinite ease-in-out;
+    }
+
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0.05; }
+      50% { opacity: 0.15; }
     }
 
     @keyframes floatAround {
@@ -64,9 +77,21 @@
     .container {
       max-width: 1300px;
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 20px;
       position: relative;
       z-index: 5;
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        padding: 0 40px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .container {
+        padding: 0 80px;
+      }
     }
 
     /* --- mobile first typography & spacing --- */
@@ -87,6 +112,17 @@
       gap: 15px;
       padding: 20px 0;
       border-bottom: 1px solid rgba(255,255,255,0.03);
+      position: sticky;
+      top: 0;
+      background: rgba(0,0,0,0.9);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .navbar.scrolled {
+      background: rgba(0,0,0,0.95);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.5);
     }
 
     .logo {
@@ -95,6 +131,12 @@
       background: var(--gradient-primary);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
     }
 
     .nav-links {
@@ -102,6 +144,40 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 20px 28px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-links.mobile-hidden {
+      display: none;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 4px;
+      padding: 10px;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background: #fff;
+      transition: all 0.3s ease;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -6px);
     }
 
     .nav-links a {
@@ -175,6 +251,27 @@
         padding: 25px 0;
       }
       .nav-links { justify-content: flex-end; }
+      .hamburger { display: none; }
+      .nav-links.mobile-hidden { display: flex; }
+    }
+
+    @media (max-width: 699px) {
+      .hamburger { display: flex; }
+      .nav-links { display: none; }
+      .nav-links.mobile-open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,0.95);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.03);
+        gap: 15px;
+        align-items: center;
+      }
     }
 
     /* --- hero (mobile tuned) --- */
@@ -197,6 +294,12 @@
       font-weight: 600;
       margin-bottom: 20px;
       font-size: 0.9rem;
+      animation: badgeGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes badgeGlow {
+      from { box-shadow: 0 0 10px rgba(17,255,234,0.2); }
+      to { box-shadow: 0 0 20px rgba(17,255,234,0.4); }
     }
 
     .hero-content h1 .highlight {
@@ -269,6 +372,9 @@
     .section-header {
       text-align: center;
       margin-bottom: 50px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 1s ease-out 0.5s forwards;
     }
     .section-header h2 {
       font-size: 2.2rem;
@@ -460,18 +566,30 @@
 
     /* footer (mobile optimized) */
     .footer {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 40px;
       padding: 50px 0 30px;
       border-top: 1px solid rgba(255,255,255,0.03);
     }
 
-    .footer-col p { margin: 15px 0; }
+    .footer-col h4 {
+      color: var(--teal);
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .footer-col p {
+      margin: 8px 0;
+      line-height: 1.6;
+    }
+
     .social-links {
       display: flex;
       gap: 15px;
       flex-wrap: wrap;
+      margin-top: 20px;
     }
 
     .social-links a {
@@ -483,20 +601,38 @@
       align-items: center;
       justify-content: center;
       color: #fff;
-      transition: 0.3s;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .social-links a::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--gradient-primary);
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
     .social-links a:hover {
-      background: var(--teal);
-      color: #000;
-      transform: translateY(-5px);
+      transform: translateY(-5px) scale(1.1);
+      box-shadow: 0 10px 20px rgba(17,255,234,0.3);
+    }
+
+    .social-links a:hover::before {
+      opacity: 1;
+    }
+
+    .social-links a i {
+      position: relative;
+      z-index: 1;
     }
 
     @media (min-width: 680px) {
       .footer {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 50px;
       }
     }
 
@@ -505,39 +641,48 @@
       padding: 30px 0 15px;
       color: #555;
       font-size: 0.85rem;
+      border-top: 1px solid rgba(255,255,255,0.03);
+      margin-top: 40px;
     }
 
-    /* --- whatsapp button (mobile friendly) --- */
-    .whatsapp-float {
+    /* back to top button */
+    .back-to-top {
       position: fixed;
-      bottom: 20px;
+      bottom: 100px;
       right: 20px;
-      background: #25D366;
-      width: 60px;
-      height: 60px;
+      background: var(--gradient-primary);
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
-      color: white;
-      text-decoration: none;
-      box-shadow: 0 15px 30px rgba(37,211,102,0.4);
-      transition: 0.3s;
+      color: #000;
+      font-size: 1.2rem;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
       z-index: 999;
+      box-shadow: 0 5px 15px rgba(17,255,234,0.3);
     }
 
-    .whatsapp-float:hover {
-      transform: scale(1.1) rotate(5deg);
-      background: #20b859;
+    .back-to-top.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .back-to-top:hover {
+      transform: translateY(-3px) scale(1.1);
+      box-shadow: 0 10px 25px rgba(17,255,234,0.5);
     }
 
     @media (min-width: 600px) {
-      .whatsapp-float {
-        width: 70px;
-        height: 70px;
-        font-size: 2.4rem;
-        bottom: 30px;
+      .back-to-top {
+        width: 60px;
+        height: 60px;
+        font-size: 1.4rem;
+        bottom: 120px;
         right: 30px;
       }
     }
@@ -546,6 +691,50 @@
     .text-teal { color: var(--teal); }
     .text-gold { color: var(--gold); }
     section[id] { scroll-margin-top: 70px; }
+
+    /* scroll animations */
+    .work-card, .service-card, .founded-banner, .cta-section {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .work-card.animate-in, .service-card.animate-in, .founded-banner.animate-in, .cta-section.animate-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* additional animations */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .btn:hover {
+      animation: pulse 0.6s ease-in-out;
+    }
+
+    @keyframes slideInLeft {
+      from { transform: translateX(-100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideInRight {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .hero-content.animate-in {
+      animation: slideInLeft 1s ease-out;
+    }
+
+    .hero-visual.animate-in {
+      animation: slideInRight 1s ease-out 0.3s both;
+    }
+
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -556,11 +745,21 @@
     <i class="fab fa-whatsapp"></i>
   </a>
 
+  <!-- Back to top button -->
+  <div class="back-to-top" id="backToTop">
+    <i class="fas fa-arrow-up"></i>
+  </div>
+
   <div class="container">
     <!-- navigation (mobile friendly) -->
     <nav class="navbar">
       <div class="logo">FLYON<span style="color: #fff; -webkit-text-fill-color: #fff;"> agency</span></div>
-      <div class="nav-links">
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="nav-links" id="navLinks">
         <a href="#home">Home</a>
         <a href="#work">Work</a>
         <a href="#services">Services</a>
@@ -572,9 +771,9 @@
     <!-- hero section -->
     <section id="home" style="scroll-margin-top: 60px;">
       <div class="hero">
-        <div class="hero-content">
+        <div class="hero-content animate-in">
           <span class="hero-badge"><i class="fas fa-map-pin"></i> now in Islamabad</span>
-          <h1>We <span class="highlight">market</span> & <span class="highlight">build</span> from the capital</h1>
+          <h1 id="typewriter"></h1>
           <p>Flyon operates out of Islamabad, serving national and global clients. Fresh thinking, zero legacy — since 2025.</p>
           <div class="hero-buttons">
             <a href="#work" class="btn">see our work <i class="fas fa-arrow-right"></i></a>
@@ -584,11 +783,11 @@
             <i class="fas fa-city"></i> <span>based in Islamabad — serving worldwide</span>
           </div>
         </div>
-        <div class="hero-visual">
+        <div class="hero-visual animate-in">
           <div class="stats-grid">
-            <div><div class="stat-number" style="background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">100k+</div><div style="color: #aaa;">visits generated</div></div>
-            <div><div class="stat-number" style="background: var(--gradient-gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">#1</div><div style="color: #aaa;">MC server client</div></div>
-            <div><div class="stat-number" style="color: var(--teal);">2025</div><div style="color: #aaa;">founded</div></div>
+            <div><div class="stat-number count-up" data-target="100000" style="background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">0</div><div style="color: #aaa;">visits generated</div></div>
+            <div><div class="stat-number count-up" data-target="1" style="background: var(--gradient-gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">0</div><div style="color: #aaa;">MC server client</div></div>
+            <div><div class="stat-number count-up" data-target="2025" style="color: var(--teal);">0</div><div style="color: #aaa;">founded</div></div>
             <div><div class="stat-number" style="color: #fff;">ISB</div><div style="color: #aaa;">HQ</div></div>
           </div>
         </div>
@@ -690,14 +889,15 @@
           </div>
         </div>
         <div class="footer-col">
-          <h4 style="margin-bottom: 15px;">reach out</h4>
+          <h4>reach out</h4>
           <p><i class="fas fa-phone-alt text-teal"></i> +92 332 8882041</p>
           <p><i class="fab fa-whatsapp" style="color:#25D366;"></i> WhatsApp (bottom right)</p>
           <p><i class="fas fa-map-pin text-teal"></i> Islamabad, Pakistan</p>
+          <p><i class="fas fa-envelope text-teal"></i> info@flyon.agency</p>
         </div>
         <div class="footer-col">
-          <h4 style="margin-bottom: 15px;">clients</h4>
-          <p>Minesurf · Sparkefire · NovaPulse</p>
+          <h4>services</h4>
+          <p>Growth Marketing · Web Development · Brand Strategy</p>
         </div>
       </div>
       <div class="footer-bottom">© 2025 Flyon Agency — headquartered in Islamabad. All rights reserved.</div>
@@ -708,7 +908,7 @@
     (function() {
       // floating elements (more variation)
       const container = document.getElementById('floatingElements');
-      for (let i = 0; i < 18; i++) {
+      for (let i = 0; i < 25; i++) {
         const el = document.createElement('div');
         el.className = 'floating-element';
         const size = 70 + Math.random() * 350;
@@ -722,13 +922,98 @@
         container.appendChild(el);
       }
 
-      // smooth scroll for nav links
-      document.querySelectorAll('.nav-links a').forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          const target = document.querySelector(link.getAttribute('href'));
-          if (target) target.scrollIntoView({ behavior: 'smooth' });
+      // hamburger menu
+      const hamburger = document.getElementById('hamburger');
+      const navLinks = document.getElementById('navLinks');
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('mobile-open');
+      });
+
+      // close mobile menu on link click
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          hamburger.classList.remove('active');
+          navLinks.classList.remove('mobile-open');
         });
+      });
+
+      // sticky navbar background on scroll
+      const navbar = document.querySelector('.navbar');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+      });
+
+      // back to top button
+      const backToTop = document.getElementById('backToTop');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+          backToTop.classList.add('show');
+        } else {
+          backToTop.classList.remove('show');
+        }
+      });
+
+      backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // scroll animations
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.work-card, .service-card, .founded-banner, .cta-section').forEach(el => {
+        observer.observe(el);
+      });
+
+      // typewriter effect
+      const typewriterElement = document.getElementById('typewriter');
+      const fullText = 'We <span class="highlight">market</span> & <span class="highlight">build</span> from the capital';
+      let index = 0;
+      function typeWriter() {
+        if (index < fullText.length) {
+          typewriterElement.innerHTML = fullText.substring(0, index + 1);
+          index++;
+          setTimeout(typeWriter, 50);
+        }
+      }
+      setTimeout(typeWriter, 500);
+
+      // count up animation
+      const countUpElements = document.querySelectorAll('.count-up');
+      countUpElements.forEach(el => {
+        const target = parseInt(el.getAttribute('data-target'));
+        let current = 0;
+        const increment = target / 100;
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            if (target === 100000) {
+              el.innerText = '100k+';
+            } else if (target === 1) {
+              el.innerText = '#1';
+            } else {
+              el.innerText = target.toString();
+            }
+            clearInterval(timer);
+          } else {
+            el.innerText = Math.floor(current).toLocaleString();
+          }
+        }, 20);
       });
     })();
   </script>
